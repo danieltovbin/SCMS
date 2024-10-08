@@ -1,16 +1,17 @@
 import connection from "../../config/dbConn";
 import { Request, Response } from 'express';
+import { Course } from "./courseModel";
 
 export const getCourses = async (req: Request, res:Response) => {
     try {
-        const courses = await new Promise((resolve, reject) => {
+        const courses:Course[] = await new Promise((resolve, reject) => {
             const sql = 'SELECT * FROM Courses';
             connection.query(sql, (err, result) => {
                 if (err) {
                     console.error('Error in getting courses', err);
                     return reject(err);
                 }
-                resolve(result);
+                resolve(result as Course[]);
             });
         });
 
@@ -33,13 +34,13 @@ export const createCourse = async (req:Request, res:Response) => {
     const sql = 'INSERT INTO Courses (title, description) VALUES (?, ?)';
 
     try {
-        const result = await new Promise((resolve, reject) => {
+        const result:Course[] = await new Promise((resolve, reject) => {
             connection.query(sql, [title, description], (err, result) => {
                 if (err) {
                     console.error('Error creating course:', err);
                     return reject(err);
                 }
-                resolve(result);
+                resolve(result as Course[]);
             });
         });
 
@@ -68,13 +69,13 @@ export const updateCourse = async (req:Request, res:Response) => {
     const sql = `UPDATE Courses SET title = ?, description = ? WHERE id = ?`;
 
     try {
-        const result = await new Promise((resolve, reject) => {
+        const result:Course[] = await new Promise((resolve, reject) => {
             connection.query(sql, [title,description, id], (err, result) => {
                 if (err) {
                     console.error('Error updating course', err);
                     return reject(err);
                 }
-                resolve(result); 
+                resolve(result as Course[]); 
             });
         });
 

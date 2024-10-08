@@ -68,13 +68,13 @@ export const getEnrollments = async (req:Request, res: Response) => {
     const sql = 'SELECT * FROM Enrollments';
 
     try {
-        const enrollments = await new Promise((resolve, reject) => {
+        const enrollments:Enrollment[] = await new Promise((resolve, reject) => {
             connection.query(sql, (err, result) => {
                 if (err) {
                     console.error('Error fetching enrollments:', err);
                     return reject(err);
                 }
-                resolve(result);
+                resolve(result as Enrollment[]);
             });
         });
 
