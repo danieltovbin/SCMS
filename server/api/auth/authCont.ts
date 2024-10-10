@@ -4,7 +4,7 @@ import connection from '../../config/dbConn';
 import { User } from '../users/usersModel';
 import jwt from 'jsonwebtoken';
 
-export const register = async (req:Request, res: Response) => {
+export const register = async (req:Request, res:Response) => {
     const { username,password, confirmPassword } = req.body;
 
     if (!username || !password || !confirmPassword) {
@@ -71,21 +71,21 @@ export const login = async (req:Request, res:Response) => {
         const existingUser: User[] = await new Promise((resolve, reject) => {
             connection.query(checkUserExistsSql, [username], (err, result) => {
                 if (err) {
-                    console.error('Error duting user lookup');
+                    console.error('Error during user lookup');
                     return reject(err);
                 }
                 resolve(result as User[]);
             });
         });
-
+        
         if (existingUser.length === 0) {
             return res.status(401).json({ message: 'Invalid credentials'})
         }
 
         const passwordMatch = await bcrypt.compare(password, existingUser[0].password);
-        
+    
         if (!passwordMatch) {
-            return res.status(401).json({ message: 'Invalid credentials'})
+            return res.status(401).json({ message: 'Password does not match'})
         }
 
         const accessToken = generateAccessToken(existingUser[0].id, existingUser[0].roles);
@@ -111,7 +111,7 @@ export const login = async (req:Request, res:Response) => {
         });
         
     } catch (err) {
-        console.error('Error dutring login', err)
+        console.error('Error during login', err)
         return res.status(500).json({ error: err.message });
     }
 }

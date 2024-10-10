@@ -16,16 +16,18 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser())
 connection
-createCoursesIfNotExists()
 createUsersIfNotExists()
+createCoursesIfNotExists()
 createEnrollmentsIfNotExists()
-// connection.end();
 
 import authRouter from './api/auth/authRoutes'
 app.use("/api/auth", authRouter)
 
 import usersRouter from './api/users/usersRoutes'
 app.use("/api/users", usersRouter)
+
+import enrollmentRouter from './api/enrollments/enrollmentsRoutes'
+app.use("/api/enrollments", enrollmentRouter)
 
 import coursesRouter from './api/courses/coursesRoutes'
 app.use("/api/courses", coursesRouter)

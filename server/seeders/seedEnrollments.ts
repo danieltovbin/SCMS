@@ -8,7 +8,7 @@ export const createEnrollmentsIfNotExists = () => {
         course_id INT NOT NULL,
         grade DECIMAL(5,2),
         FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
-        FOREIGN KEY (course_id) REFERENCES Courses(id),
+        FOREIGN KEY (course_id) REFERENCES Courses(id) ON DELETE CASCADE,
         UNIQUE (user_id, course_id)
         );
     `;

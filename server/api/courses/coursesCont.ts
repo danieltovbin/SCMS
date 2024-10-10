@@ -31,6 +31,11 @@ export const createCourse = async (req:Request, res:Response) => {
         return res.status(400).json({ message: 'Missing required fields.' });
     }
 
+    const courseTitleExists = await checkCourseTitleExists(title);
+    if (courseTitleExists) {
+        return res.status(409).json({ message: 'A course with the same title already exists.' });
+    }
+
     const sql = 'INSERT INTO Courses (title, description) VALUES (?, ?)';
 
     try {
@@ -54,6 +59,38 @@ export const createCourse = async (req:Request, res:Response) => {
 
 
 
+const checkCourseTitleExists = async (title: string, courseId?: number) => {
+    let courseTitleCheckSql: string;
+    let params: (string | number)[];
+
+    if (courseId) {
+        courseTitleCheckSql = `SELECT title FROM Courses WHERE title = ? AND id != ?`;
+        params = [title, courseId];
+    } else {
+        courseTitleCheckSql = `SELECT title FROM Courses WHERE title = ?`;
+        params = [title];
+    }
+
+    try {
+        const result: Course[] = await new Promise((resolve, reject) => {
+            connection.query(courseTitleCheckSql, params, (err, result) => {
+                if (err) {
+                    console.error('Error checking course title existence', err);
+                    return reject(err);
+                }
+                resolve(result as Course[]);
+            });
+        });
+
+        return result.length > 0;
+    } catch (err) {
+        console.error('Error checking course existence:', err);
+        throw err;
+    }
+};
+
+
+
 export const updateCourse = async (req:Request, res:Response) => {
     const { id } = req.params;
     const { title, description } = req.body;
@@ -64,6 +101,11 @@ export const updateCourse = async (req:Request, res:Response) => {
 
     if (!title || !description) {
         return res.status(400).json({ message: 'Missing fields: title or description '});
+    }
+
+    const courseTitleExists = await checkCourseTitleExists(title, Number(id));
+    if (courseTitleExists) {
+        return res.status(409).json({ message: 'A course with the same title already exists.' });
     }
 
     const sql = `UPDATE Courses SET title = ?, description = ? WHERE id = ?`;
@@ -101,9 +143,24 @@ export const deleteCourse =  async (req:Request, res:Response) => {
         return res.status(400).json({ message: 'Missing course ID for deleting course.' });
     }
 
+    const checkCourseSql = `SELECT id FROM Courses WHERE id = ?`
     const sql = 'DELETE FROM Courses WHERE id = ?';
 
     try {
+        const checkCourse:Course[] = await new Promise((resolve, reject) => {
+            connection.query(checkCourseSql, [id], (err, result) =>{
+                if (err) {
+                    console.error('Error checking if course exists for deletion',err)
+                    return reject(err);
+                }
+                resolve(result as Course[])
+            });
+        });
+
+        if (checkCourse.length === 0){
+            return res.status(404).json({ message: 'Course not found.' });
+        }
+
         await new Promise<void>((resolve,reject) => {
             connection.query(sql, [id], (err)=> {
                 if(err) {

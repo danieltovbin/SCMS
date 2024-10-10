@@ -11,7 +11,7 @@ export const createUsersIfNotExists = () => {
     refreshToken VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
     `;
-
+   
     connection.query(createUsersTable, (err, result) => {
         if (err) {
             console.error("Error creating user's table", err)

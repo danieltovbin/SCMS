@@ -1,11 +1,18 @@
 import { Request, Response } from 'express';
 import connection from '../../config/dbConn';
+import { Enrollment } from './enrollmentsModel';
+import { Course } from '../courses/courseModel';
 
-export const adminEnrollUser = async (req:Request, res: Response) => {
+export const adminEnrollUser = async (req:Request, res:Response) => {
     const { userId, courseId, grade } = req.body;
 
     if (!userId || !courseId) {
         return res.status(400).json({ message: 'Missing required fields: userId or courseId' });
+    }
+
+    const courseExists = await checkCourseExists(courseId);
+    if (!courseExists) {
+        return res.status(404).json({ message: 'Course does not exist.' });
     }
 
     const gradeValue = grade !== undefined ? grade : 0;
@@ -37,9 +44,20 @@ export const adminEnrollUser = async (req:Request, res: Response) => {
 
 export const enrollUser = async (req: Request, res: Response) => {
     const { userId, courseId } = req.body;
+    const role = req.user?.roles;
+    const tokenUserId = req.user?.userId;
 
     if (!userId || !courseId) {
         return res.status(400).json({ message: 'Missing required fields: userId or courseId.' });
+    }
+
+    if (role === 'user' && Number(userId) !== tokenUserId){
+        return res.status(403).json({ message: 'Users can only enoll themselves in courses.' });
+    }
+
+    const courseExists = await checkCourseExists(courseId);
+    if (!courseExists) {
+        return res.status(404).json({ message: 'Course does not exist.' });
     }
 
     const sql = 'INSERT INTO Enrollments (user_id, course_id) VALUES (?, ?) ON DUPLICATE KEY UPDATE grade = NULL;';
@@ -64,12 +82,44 @@ export const enrollUser = async (req: Request, res: Response) => {
 
 
 
+const checkCourseExists = async (courseId: number) => {
+    const courseCheckSql = `SELECT * FROM Courses WHERE id = ?`;
+
+    try {
+        const result: Course[] = await new Promise((resolve, reject) => {
+            connection.query(courseCheckSql, [courseId], (err, result) => {
+                if (err) {
+                    console.error('Error checking course existence', err);
+                    return reject(err);
+                }
+                resolve(result as Course[]);
+            });
+        });
+
+        return result.length > 0;
+    } catch (err) {
+        console.error('Error checking course existence:', err);
+        throw err;
+    }
+}
+
+
+
 export const getEnrollments = async (req:Request, res: Response) => {
-    const sql = 'SELECT * FROM Enrollments';
+    const role = req.user?.roles;
+    const userId = req.user?.userId;
+
+    let sql = 'SELECT * FROM Enrollments';
+    const params:Number[] = [];
+
+    if (role === 'user') {
+        sql += ' WHERE user_id = ?';
+        params.push(userId)
+    }
 
     try {
         const enrollments:Enrollment[] = await new Promise((resolve, reject) => {
-            connection.query(sql, (err, result) => {
+            connection.query(sql,params, (err, result) => {
                 if (err) {
                     console.error('Error fetching enrollments:', err);
                     return reject(err);
@@ -132,9 +182,24 @@ export const deleteEnrollment = async (req:Request, res: Response) => {
         return res.status(400).json({ message: 'Missing user ID or course ID' });
     }
 
+    const checkEnrollmentSql = 'SELECT user_id, course_id FROM Enrollments WHERE user_id =? AND course_id = ?';
     const sql = 'DELETE FROM Enrollments WHERE user_id = ? AND course_id = ?';
 
     try {
+        const checkEnrollment:Enrollment[] = await new Promise((resolve, reject) => {
+            connection.query(checkEnrollmentSql, [userId, courseId], (err, result) => {
+                if (err) {
+                    console.error('Error checking if enrollment exists for deletion',err)
+                    return reject(err);
+                }
+                resolve(result as Enrollment[])
+            })
+        });
+
+        if (checkEnrollment.length === 0) {
+            return res.status(404).json({ message: 'Enrollment not found.' });
+        }
+
         await new Promise<void>((resolve, reject) => {
             connection.query(sql, [userId, courseId], (err) => {
                 if(err) {
