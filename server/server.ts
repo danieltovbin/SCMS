@@ -3,9 +3,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import connection from './config/dbConn';
-import { createCoursesIfNotExists } from './seeders/seedCourses';
-import { createUsersIfNotExists } from './seeders/seedUsers';
-import { createEnrollmentsIfNotExists } from './seeders/seedEnrollments';
 import { errorHandler } from './middleware/errorHandler';
 
 dotenv.config()
@@ -16,9 +13,6 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser())
 connection
-createUsersIfNotExists()
-createCoursesIfNotExists()
-createEnrollmentsIfNotExists()
 
 import authRouter from './api/auth/authRoutes'
 app.use("/api/auth", authRouter)
