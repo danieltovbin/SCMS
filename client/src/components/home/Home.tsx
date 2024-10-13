@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import Grid2 from "@mui/material/Grid2";
 import { cards, Item } from "./utils/homeUtils";
+import './home.scss';
 
 function Home() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ function Home() {
   };
 
   return (
-    <div>
+    <div className="Home">
       <Grid2
         alignItems="center"
         minHeight="80vh"

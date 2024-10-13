@@ -1,7 +1,10 @@
+import Header from "../../components/header/Header"
 
 function EnrollmentsPage() {
   return (
-    <div>EnrollmentsPage</div>
+    <div>
+      <Header />
+    </div>
   )
 }
 
