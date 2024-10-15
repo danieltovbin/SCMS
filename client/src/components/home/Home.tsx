@@ -22,7 +22,7 @@ function Home() {
         {cards &&
           cards.map((card) => {
             return (
-              <Grid2 onClick={() => handleCardClick(card.path)} size={card.cardsSize}>
+              <Grid2 key={card.id} onClick={() => handleCardClick(card.path)} size={card.cardsSize}>
                 <Item>{card.title}</Item>
               </Grid2>
             );

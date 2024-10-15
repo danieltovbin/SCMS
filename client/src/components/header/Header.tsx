@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { MouseEvent, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { darkTheme, settings } from "./utils/headerUtils";
+import { darkTheme, handleMenuItemClick, settings } from "./utils/headerUtils";
 
 function Header() {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -30,6 +30,8 @@ function Header() {
   const handleCloseMenu = () => {
     setAnchorElUser(null);
   };
+
+  
   return (
     <ThemeProvider theme={darkTheme}>
       <AppBar
@@ -66,7 +68,7 @@ function Header() {
               onClose={handleCloseMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseMenu}>
+                <MenuItem key={setting} onClick={() => handleMenuItemClick(setting)}>
                   {setting}
                 </MenuItem>
               ))}

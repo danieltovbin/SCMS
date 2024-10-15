@@ -10,6 +10,7 @@ import axios from "axios";
 import { FC, useEffect, useState } from "react";
 import { Course, coursePage } from "./utils/coursesUtils";
 import './courses.scss';
+import TitleHeader from "../titleHeader/TitleHeader";
 
 const Courses: FC<coursePage> = ({ children }) => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -28,6 +29,7 @@ const Courses: FC<coursePage> = ({ children }) => {
 
   return (
     <div className="Courses">
+      <TitleHeader title="Courses"/>
       <Grid2
         alignItems="center"
         justifyContent="center"
