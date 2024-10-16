@@ -6,6 +6,7 @@ interface AuthContextType {
     isAuthenticated: boolean;
     loading: boolean;
     isAdmin: boolean;
+    setLoading: (loading: boolean) => void;
     loginUser: (username: string, password: string) => Promise<void>;
     logoutUser: () => Promise<void>;
 }
@@ -66,7 +67,7 @@ export const AuthProvider:FC<AuthProviderProps> = ({ children }) => {
     }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isAdmin, loading, loginUser , logoutUser}}>
+    <AuthContext.Provider value={{ isAuthenticated, isAdmin, loading, setLoading, loginUser , logoutUser}}>
         {children}
     </AuthContext.Provider>
   )

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { getEnrollments } from '../../api/enrollments';
-// import { AuthProvider, useAuthContext } from '../../context/AuthContext';
 
 interface Enrollment {
     id: number;
