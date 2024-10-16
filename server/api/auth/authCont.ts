@@ -102,12 +102,13 @@ export const login = async (req:Request, res:Response) => {
             });
         });
 
-        res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'none', maxAge: 24 * 60 * 60 * 1000});
+        res.cookie('user', refreshToken, { httpOnly: true, secure:true, sameSite: 'none', maxAge: 24 * 60 * 60 * 1000});
         return res.status(200).json({
             message: 'Login successful',
             userId: existingUser[0].id,
             username: existingUser[0].username,
             access_token: accessToken,
+            role: existingUser[0].roles
         });
         
     } catch (err) {
@@ -148,7 +149,7 @@ export const logout = async (req:Request, res:Response) => {
             });
         });
 
-        res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: 'true'});
+        res.clearCookie('user', { httpOnly: true, sameSite: 'none', secure: true});
         return res.sendStatus(204);
     } catch (err) {
         console.error('Error during logout:', err);
