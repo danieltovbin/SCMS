@@ -22,14 +22,14 @@ Users can view available courses, enroll in them, and track their progress, whil
 
 ## How to Use
 
-# Clone the repository
+## Clone the repository
 git clone https://github.com/danieltovbin/SCMS.git
-# For the server
+## For the server
 cd server
 npm install
 npm run dev
 
-# For the client
+## For the client
 cd client
 npm install
 npm run dev
