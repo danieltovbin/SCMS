@@ -2,9 +2,11 @@ import { useNavigate } from "react-router-dom";
 import Grid2 from "@mui/material/Grid2";
 import { cards, Item } from "./utils/homeUtils";
 import './home.scss';
+import { useAuthContext } from "../../context/AuthContext";
 
 function Home() {
   const navigate = useNavigate();
+  const {isAdmin} = useAuthContext();
 
   const handleCardClick = (path:string) => {
     navigate(path)
@@ -21,6 +23,9 @@ function Home() {
       >
         {cards &&
           cards.map((card) => {
+            if (card.id === 3 && !isAdmin) {
+              return null;
+            }
             return (
               <Grid2 key={card.id} onClick={() => handleCardClick(card.path)} size={card.cardsSize}>
                 <Item>{card.title}</Item>

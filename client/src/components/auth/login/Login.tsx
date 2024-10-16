@@ -1,6 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import "./login.scss";
-
 import {
     Box,
     Button,
@@ -10,8 +9,8 @@ import {
     Typography,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import { loginUser } from "../../../api/auth";
 import { Card, SignInContainer } from "./utils/loginUtils";
+import { useAuthContext } from "../../../context/AuthContext";
 
 
 const Login = () => {
@@ -19,26 +18,22 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("")
   const navigate = useNavigate();
+  const { loginUser } = useAuthContext(); 
 
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
-    event?.preventDefault()
+    event.preventDefault();
     try {
-      if (!username || !password) {
-        console.log("Please fill all fields");
-        return;
-      }
-      const response = await loginUser(username, password);
-      if (response?.status === 200) {
-        navigate("/home"); 
-      } else {
-        setError("Invalid credentials");
-        console.log("Login failed");
-      }
+        if (!username || !password) {
+            setError("Please fill all fields");
+            return;
+        }
+        await loginUser(username, password); 
+        navigate("/home");
     } catch (error) {
-      setError("Error during login");  
-      console.error("Error during login:", error);
+        setError("Error during login");
+        console.error("Error during login:", error);
     }
-  };
+};
 
   const handleInputChange = async (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
@@ -65,6 +60,11 @@ const Login = () => {
             gap: 2,
           }}
         >
+           {error && ( 
+            <Typography color="error" variant="body2">
+              {error}
+            </Typography>
+          )}
           <FormControl>
             <FormLabel>Username</FormLabel>
             <TextField

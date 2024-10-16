@@ -12,12 +12,16 @@ import {
 } from "@mui/material";
 import { MouseEvent, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { darkTheme, handleMenuItemClick, settings } from "./utils/headerUtils";
+import { darkTheme } from "./utils/headerUtils";
+import { useAuthContext } from "../../context/AuthContext";
+
 
 function Header() {
+  const { isAuthenticated} = useAuthContext();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const { logoutUser } = useAuthContext(); 
 
   const handleBackToHomePage = () => {
     navigate("/home");
@@ -31,7 +35,28 @@ function Header() {
     setAnchorElUser(null);
   };
 
-  
+  const handleMenuItemClick = (setting: string) => {
+    switch (setting) {
+      case 'Profile':
+        navigate('/profile');
+        break;
+      case 'Login':
+        navigate('/login');
+        break;
+      case 'Register':
+        navigate('/register');
+        break;
+      case 'Logout':
+        logoutUser();
+        break;
+      default:
+        break;
+    }
+    handleCloseMenu();
+  };
+
+  const settings = isAuthenticated ? ['Profile', 'Logout'] : ['Login'];
+
   return (
     <ThemeProvider theme={darkTheme}>
       <AppBar

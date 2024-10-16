@@ -21,5 +21,5 @@ const cardsSize = { xs: 12, sm: 6, md: 4 };
 export const cards = [
   { id: 1, title: "Courses", cardsSize, path: "/courses" },
   { id: 2, title: "Enrollments", cardsSize, path: "/enrollments" },
-  { id: 3, title: "Users", cardsSize, path: "/users", role: "admin" },
+  { id: 3, title: "Users", cardsSize, path: "/users" },
 ];
