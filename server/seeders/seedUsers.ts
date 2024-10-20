@@ -1,5 +1,7 @@
 import connection from "../config/dbConn";
 import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const createUsersIfNotExists = () => {
     const createUsersTable = `
@@ -23,12 +25,14 @@ export const createUsersIfNotExists = () => {
     }
 
     const insertInitialUsers = async () => {
+        const { PASSWORDSEEDUSERS } = process.env;
+
         const users = [
-            { username: 'Tali', password: 'Tali1234' },
-            { username: 'Dan', password: 'Dan1234' },
-            { username: 'Miki', password: 'Miki1234' },
-            { username: 'Doli', password: 'Doli1234' },
-            { username: 'Bob', password: 'Bob1234' },
+            { username: 'Tali', password: PASSWORDSEEDUSERS },
+            { username: 'Dan', password: PASSWORDSEEDUSERS },
+            { username: 'Miki', password: PASSWORDSEEDUSERS },
+            { username: 'Doli', password: PASSWORDSEEDUSERS },
+            { username: 'Bob', password: PASSWORDSEEDUSERS },
         ];
 
         for(const user of users) {

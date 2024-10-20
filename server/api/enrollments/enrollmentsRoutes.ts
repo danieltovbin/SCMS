@@ -8,8 +8,8 @@ router
 .post('/enrollment/admin',verifyAdmin, adminEnrollUser)
 .get('/enrollments',verifyToken, getEnrollments)
 .post('/enrollment',verifyToken, enrollUser)
-.put('/enrollment/:id',verifyAdmin, updateUserGrade)
-.delete('/enrollment/:userId/:courseId',verifyAdmin, deleteEnrollment)
+.patch('/enrollment/:id',verifyAdmin, updateUserGrade)
+.delete('/enrollment/:id',verifyAdmin, deleteEnrollment)
 
 
 export default router;

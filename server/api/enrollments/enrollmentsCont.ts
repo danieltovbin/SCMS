@@ -4,18 +4,24 @@ import { Enrollment } from './enrollmentsModel';
 import { Course } from '../courses/courseModel';
 
 export const adminEnrollUser = async (req:Request, res:Response) => {
-    const { userId, courseId, grade } = req.body;
+    const { user_name, course_name, grade } = req.body;
 
-    if (!userId || !courseId) {
-        return res.status(400).json({ message: 'Missing required fields: userId or courseId' });
+    if (!user_name || !course_name) {
+        return res.status(400).json({ message: 'Missing required fields: user name or course name' });
     }
 
-    const courseExists = await checkCourseExists(courseId);
+    const courseExists = await checkCourseExists(undefined, course_name);
     if (!courseExists) {
         return res.status(404).json({ message: 'Course does not exist.' });
     }
 
-    const gradeValue = grade !== undefined ? grade : 0;
+    const gradeValue = (grade !== undefined && grade !== '') ? grade : 0;
+    const fetchIdsSql = `
+        SELECT u.id AS user_id, c.id AS course_id
+        FROM Users u
+        JOIN Courses c ON c.title = ?
+        WHERE u.username = ?;
+    `;
 
     const sql = `
         INSERT INTO Enrollments (user_id, course_id, grade)
@@ -23,8 +29,18 @@ export const adminEnrollUser = async (req:Request, res:Response) => {
     `;
 
     try {
+        const { user_id, course_id } = await new Promise<{ user_id: number, course_id :number}>((resolve, reject) => {
+            connection.query(fetchIdsSql,[course_name, user_name], (err, result) => {
+                if (err || (result as Enrollment[]).length === 0) {
+                    console.error('Error fetching IDs:', err);
+                    return reject(new Error('User or course not found.'))
+                }
+                resolve(result[0]);
+            })
+        });
+
         await new Promise<void>((resolve, reject) => {
-            connection.query(sql, [userId, courseId,gradeValue], (err) => {
+            connection.query(sql, [user_id, course_id,gradeValue], (err) => {
                 if (err) {
                     console.error('Error enrolling user by admin:', err);
                     return reject(err);
@@ -43,19 +59,19 @@ export const adminEnrollUser = async (req:Request, res:Response) => {
 
 
 export const enrollUser = async (req: Request, res: Response) => {
-    const { userId, courseId } = req.body;
+    const { courseId } = req.body;
+    const userId = req.user?.userId;
     const role = req.user?.roles;
-    const tokenUserId = req.user?.userId;
 
     if (!userId || !courseId) {
         return res.status(400).json({ message: 'Missing required fields: userId or courseId.' });
     }
 
-    if (role === 'user' && Number(userId) !== tokenUserId){
+    if (role !== 'admin' && userId !== req.user?.userId) {
         return res.status(403).json({ message: 'Users can only enoll themselves in courses.' });
     }
 
-    const courseExists = await checkCourseExists(courseId);
+    const courseExists = await checkCourseExists(courseId, undefined);
     if (!courseExists) {
         return res.status(404).json({ message: 'Course does not exist.' });
     }
@@ -82,12 +98,21 @@ export const enrollUser = async (req: Request, res: Response) => {
 
 
 
-const checkCourseExists = async (courseId: number) => {
-    const courseCheckSql = `SELECT * FROM Courses WHERE id = ?`;
+const checkCourseExists = async (courseId?: number, course_name?: string) => {
+    let courseCheckSql: string;
+    let params: (number | string)[];
+
+    if (courseId) {
+        courseCheckSql = `SELECT * FROM Courses WHERE id = ?`
+        params = [courseId]
+    } else {
+        courseCheckSql = `SELECT * FROM Courses WHERE title = ?`
+        params = [course_name]
+    }
 
     try {
         const result: Course[] = await new Promise((resolve, reject) => {
-            connection.query(courseCheckSql, [courseId], (err, result) => {
+            connection.query(courseCheckSql, params, (err, result) => {
                 if (err) {
                     console.error('Error checking course existence', err);
                     return reject(err);
@@ -109,7 +134,12 @@ export const getEnrollments = async (req:Request, res: Response) => {
     const role = req.user?.roles;
     const userId = req.user?.userId;
 
-    let sql = 'SELECT * FROM Enrollments';
+    let sql = `
+        SELECT e.id AS enrollmentId, e.grade, u.username, c.title AS courseName
+        FROM Enrollments e
+        JOIN Users u ON e.user_id = u.id
+        JOIN Courses c ON e.course_id = c.id
+    `;
     const params:Number[] = [];
 
     if (role === 'user') {
@@ -140,7 +170,9 @@ export const getEnrollments = async (req:Request, res: Response) => {
 export const updateUserGrade = async (req:Request, res:Response) => {
     const { id } = req.params;
     const { grade } = req.body;
-
+    if (!req.user) {
+        return res.status(403).json({ message: "Forbidden" });
+    }
     if (grade === undefined) {
         return res.status(400).json({ message: 'Missing required fields: grade.' });
     }
@@ -165,7 +197,6 @@ export const updateUserGrade = async (req:Request, res:Response) => {
                 resolve();
             })
         });
-
         res.status(200).json({ message: 'Grade updated successfully.' });
     } catch (err) {
         console.error('Error updating grade', err)
@@ -176,18 +207,18 @@ export const updateUserGrade = async (req:Request, res:Response) => {
 
 
 export const deleteEnrollment = async (req:Request, res: Response) => {
-    const { userId, courseId } = req.params;
+    const { id } = req.params;
 
-    if (!userId || !courseId ) {
-        return res.status(400).json({ message: 'Missing user ID or course ID' });
+    if (!id ) {
+        return res.status(400).json({ message: 'Missing enrollment ID' });
     }
 
-    const checkEnrollmentSql = 'SELECT user_id, course_id FROM Enrollments WHERE user_id =? AND course_id = ?';
-    const sql = 'DELETE FROM Enrollments WHERE user_id = ? AND course_id = ?';
+    const checkEnrollmentSql = 'SELECT id FROM Enrollments WHERE id =?';
+    const sql = 'DELETE FROM Enrollments WHERE id = ?';
 
     try {
         const checkEnrollment:Enrollment[] = await new Promise((resolve, reject) => {
-            connection.query(checkEnrollmentSql, [userId, courseId], (err, result) => {
+            connection.query(checkEnrollmentSql, [id], (err, result) => {
                 if (err) {
                     console.error('Error checking if enrollment exists for deletion',err)
                     return reject(err);
@@ -201,7 +232,7 @@ export const deleteEnrollment = async (req:Request, res: Response) => {
         }
 
         await new Promise<void>((resolve, reject) => {
-            connection.query(sql, [userId, courseId], (err) => {
+            connection.query(sql, [id], (err) => {
                 if(err) {
                     console.error('Error deleting enrollment:', err)
                     return reject(err);
