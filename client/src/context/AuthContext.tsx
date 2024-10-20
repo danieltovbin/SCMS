@@ -25,7 +25,6 @@ export const AuthProvider:FC<AuthProviderProps> = ({ children }) => {
     const handleIsAuth = () => {
         const userRole = Cookies.get('user_role');
         const accessToken = Cookies.get('access_token');
-        
         setIsAuthenticated(!!accessToken);
         setIsAdmin(userRole === 'admin');
         setLoading(false);
@@ -34,11 +33,9 @@ export const AuthProvider:FC<AuthProviderProps> = ({ children }) => {
     const loginUser = async (username: string, password: string) => {
         try {
             const response = await axios.post('/api/auth/login', { username, password });
-            console.log("User role from response:", response.data.role);
             if (response.status === 200) {
                 Cookies.set('access_token', response.data.access_token, { expires: 1 });
                 Cookies.set('user_role', response.data.role, { expires: 1 });                
-                
                 handleIsAuth();
             }
         } catch (error) {
