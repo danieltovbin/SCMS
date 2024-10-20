@@ -48,6 +48,7 @@ function Header() {
         break;
       case 'Logout':
         logoutUser();
+        navigate('/home')
         break;
       default:
         break;
