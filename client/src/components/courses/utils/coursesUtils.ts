@@ -6,6 +6,4 @@ export interface Course {
     description: string;
   }
   
-  export interface coursePage {
-    children?: ReactNode;
-  }
+  
