@@ -7,31 +7,20 @@ import {
   Grid2,
   Typography,
 } from "@mui/material";
-import axios from "axios";
-import { FC, useEffect, useState } from "react";
-import { Course, coursePage } from "./utils/coursesUtils";
-import "./courses.scss";
-import TitleHeader from "../titleHeader/TitleHeader";
+import { useEffect } from "react";
 import { useAuthContext } from "../../context/AuthContext";
+import { useCoursesContext } from "../../context/CoursesContext";
+import TitleHeader from "../titleHeader/TitleHeader";
+import "./courses.scss";
+import CoursesAdmin from "../../pages/adminPages/CoursesAdmin";
 
-const Courses: FC<coursePage> = ({ children }) => {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const { loading, setLoading } = useAuthContext();
+const Courses = () => {
+  const { loading, isAdmin } = useAuthContext();
+  const { fetchCourses, courses } = useCoursesContext();
 
   useEffect(() => {
-    const fetchCourses = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get("/api/courses/courses");
-        setCourses(response.data.courses);
-      } catch (err) {
-        console.error("Error fetching courses");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchCourses();
-  }, [setLoading]);
+  }, []);
 
   return (
     <div className="Courses">
@@ -49,7 +38,9 @@ const Courses: FC<coursePage> = ({ children }) => {
           rowSpacing={8}
           columnSpacing={{ xs: 2, sm: 1, md: 4 }}
         >
-          {courses &&
+          {isAdmin ? (
+            <CoursesAdmin />
+          ) : (
             courses.map((course) => {
               return (
                 <Card sx={{ maxWidth: 300 }} key={course.id}>
@@ -65,10 +56,10 @@ const Courses: FC<coursePage> = ({ children }) => {
                     image="https://manual-handling.ie/wp-content/uploads/2021/03/2.png"
                     alt="Course image"
                   />
-                  {children}
                 </Card>
               );
-            })}
+            })
+          )}
         </Grid2>
       )}
     </div>

@@ -1,10 +1,8 @@
 import {
-  Alert,
   Button,
-  Snackbar,
   TableCell,
   TableRow,
-  TextField,
+  TextField
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +12,7 @@ import {
   updateUserGrade,
 } from "../../api/enrollments";
 import { useAuthContext } from "../../context/AuthContext";
+import SnackBar from "../snackbar/SnackBar";
 import TableComponent from "../Table/TableComponent";
 import EnrollForm from "./utils/EnrollForm";
 import { Enrollment } from "./utils/enrollmentsUtil";
@@ -46,7 +45,6 @@ const Enrollments = () => {
       if (isAdmin) {
         const response = await updateUserGrade(enrollmentId, newGrade);
         setSuccessMessage(response);
-        handleFetch();
       }
     } catch (err) {
       console.error("Error updating grade:", err);
@@ -58,7 +56,11 @@ const Enrollments = () => {
     try {
       if (isAdmin) {
         await removeEnrollment(enrollmentId);
-        handleFetch();
+        setEnrollments((prevEnrollments) =>
+          prevEnrollments.filter(
+            (enroll) => enroll.enrollmentId !== enrollmentId
+          )
+        );
       }
     } catch (err) {
       console.error("Error deleting enrollment", err);
@@ -135,33 +137,12 @@ const Enrollments = () => {
         ))}
       </TableComponent>
       {isAdmin && <EnrollForm handleFetch={handleFetch} />}
-      <Snackbar
-        open={!!error}
-        autoHideDuration={6000}
-        onClose={() => setError(null)}
-      >
-        <Alert
-          onClose={() => setError(null)}
-          severity="error"
-          sx={{ width: "100%" }}
-        >
-          {error}
-        </Alert>
-      </Snackbar>
-
-      <Snackbar
-        open={!!successMessage}
-        autoHideDuration={6000}
-        onClose={() => setSuccessMessage(null)}
-      >
-        <Alert
-          onClose={() => setSuccessMessage(null)}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          {successMessage}
-        </Alert>
-      </Snackbar>
+      <SnackBar
+        error={error}
+        setError={setError}
+        successMessage={successMessage}
+        setSuccessMessage={setSuccessMessage}
+      />
     </div>
   );
 };

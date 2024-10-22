@@ -1,13 +1,16 @@
-import Courses from "../../components/courses/Courses"
-import Header from "../../components/header/Header"
+import Courses from "../../components/courses/Courses";
+import Header from "../../components/header/Header";
+import { CourseProvider } from "../../context/CoursesContext";
 
 function CoursesPage() {
   return (
-    <div>
-      <Header />
-      <Courses />
-    </div>
-  )
+    <CourseProvider>
+      <div>
+        <Header />
+        <Courses />
+      </div>
+    </CourseProvider>
+  );
 }
 
-export default CoursesPage
+export default CoursesPage;
