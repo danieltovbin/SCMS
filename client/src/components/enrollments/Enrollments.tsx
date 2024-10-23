@@ -16,6 +16,8 @@ import SnackBar from "../snackbar/SnackBar";
 import TableComponent from "../Table/TableComponent";
 import EnrollForm from "./utils/EnrollForm";
 import { Enrollment } from "./utils/enrollmentsUtil";
+import './enrollments.scss'
+import TitleHeader from "../titleHeader/TitleHeader";
 
 const Enrollments = () => {
   const { isAuthenticated, isAdmin } = useAuthContext();
@@ -72,8 +74,8 @@ const Enrollments = () => {
   }, []);
 
   return (
-    <div>
-      <h2>Enrollments</h2>
+    <div className="Enrollments">
+       <TitleHeader title="Enrollment"/>
       <TableComponent headers={headers}>
         {enrollments.map((enrollment) => (
           <TableRow key={enrollment.enrollmentId} sx={{ padding: 0 }}>

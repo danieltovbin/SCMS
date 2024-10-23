@@ -25,6 +25,8 @@ export const removeCourse = async (id: number) => {
   }
 };
 
+
+
 export const updateCourse = async (
   id: number,
   updatedData: { title: string; description: string }
@@ -64,6 +66,8 @@ export const updateCourse = async (
     }
   }
 };
+
+
 
 export const createCourse = async (title: string, description: string) => {
   const token = Cookies.get("access_token");
@@ -111,11 +115,3 @@ export const createCourse = async (title: string, description: string) => {
     }
   }
 };
-
-// setCourses((prevCourses) => [
-//   ...prevCourses,
-//   { id: response.data.courseId, title, description},
-// ]);
-// setSuccessMessage("Course created successfullt.")
-
-// setError("Failed to create course.")
