@@ -6,6 +6,7 @@ export const createCoursesIfNotExists = () => {
         id INT AUTO_INCREMENT PRIMARY KEY,
         title VARCHAR(10) NOT NULL UNIQUE,
         description TEXT,
+        imgUrl VARCHAR(255),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
         `;
     

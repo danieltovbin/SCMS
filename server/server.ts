@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import connection from './config/dbConn';
 import { errorHandler } from './middleware/errorHandler';
+import { configureCloudinary } from './config/configCloudinary';
 
 dotenv.config()
 const app = express();
@@ -16,6 +17,7 @@ app.use(cors({
 }));
 app.use(cookieParser())
 connection
+configureCloudinary();
 
 import authRouter from './api/auth/authRoutes'
 app.use("/api/auth", authRouter)
