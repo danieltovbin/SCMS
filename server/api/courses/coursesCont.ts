@@ -1,6 +1,7 @@
 import connection from "../../config/dbConn";
 import { Request, Response } from 'express';
 import { Course } from "./courseModel";
+import { CLOUDINARY_IMAGE_CONFIG, uploadImage } from "../../cloudinary/cloudinary";
 
 export const getCourses = async (req: Request, res:Response) => {
     try {
@@ -22,25 +23,27 @@ export const getCourses = async (req: Request, res:Response) => {
     }
 };
 
-
-
 export const createCourse = async (req:Request, res:Response) => {
-    const { title, description } = req.body;
+    const { title, description, imgUrl } = req.body;
 
-    if (!title || !description) {
+    if (!title || !description || !imgUrl) {
         return res.status(400).json({ message: 'Missing required fields.' });
     }
 
+    console.log("imgurl from server:", imgUrl)
     const courseTitleExists = await checkCourseTitleExists(title);
     if (courseTitleExists) {
         return res.status(409).json({ message: 'A course with the same title already exists.' });
     }
 
-    const sql = 'INSERT INTO Courses (title, description) VALUES (?, ?)';
+    const sql = 'INSERT INTO Courses (title, description, imgUrl) VALUES (?, ?, ?)';
 
     try {
+        const cloudinaryResult = await uploadImage(imgUrl, 'courses', CLOUDINARY_IMAGE_CONFIG);
+        console.log("cloudinaryResult from server:", cloudinaryResult)
+        console.log("cloudinaryResult.secure_url from server:", cloudinaryResult)
         const result:Course[] = await new Promise((resolve, reject) => {
-            connection.query(sql, [title, description], (err, result) => {
+            connection.query(sql, [title, description, cloudinaryResult], (err, result) => {
                 if (err) {
                     console.error('Error creating course:', err);
                     return reject(err);
@@ -93,14 +96,14 @@ const checkCourseTitleExists = async (title: string, courseId?: number) => {
 
 export const updateCourse = async (req:Request, res:Response) => {
     const { id } = req.params;
-    const { title, description } = req.body;
+    const { title, description, imgUrl } = req.body;
 
     if(!id) {
         return res.status(400).json({ message: 'Missing user ID for updating course' });
     }
 
-    if (!title || !description) {
-        return res.status(400).json({ message: 'Missing fields: title or description '});
+    if (!title || !description ||!imgUrl) {
+        return res.status(400).json({ message: 'Missing fields: title, description or imgUrl'});
     }
 
     const courseTitleExists = await checkCourseTitleExists(title, Number(id));
@@ -108,11 +111,12 @@ export const updateCourse = async (req:Request, res:Response) => {
         return res.status(409).json({ message: 'A course with the same title already exists.' });
     }
 
-    const sql = `UPDATE Courses SET title = ?, description = ? WHERE id = ?`;
+    const sql = `UPDATE Courses SET title = ?, description = ?, imgUrl = ? WHERE id = ?`;
 
     try {
+        const cloudinaryResult = await uploadImage(imgUrl, 'courses', CLOUDINARY_IMAGE_CONFIG);
         const result:Course[] = await new Promise((resolve, reject) => {
-            connection.query(sql, [title,description, id], (err, result) => {
+            connection.query(sql, [title,description,cloudinaryResult, id], (err, result) => {
                 if (err) {
                     console.error('Error updating course', err);
                     return reject(err);
