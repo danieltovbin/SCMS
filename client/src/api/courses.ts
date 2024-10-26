@@ -29,7 +29,7 @@ export const removeCourse = async (id: number) => {
 
 export const updateCourse = async (
   id: number,
-  updatedData: { title: string; description: string }
+  updatedData: { title: string; description: string; imgUrl:string }
 ) => {
   const token = Cookies.get("access_token");
   const userRole = Cookies.get("user_role");
@@ -69,7 +69,7 @@ export const updateCourse = async (
 
 
 
-export const createCourse = async (title: string, description: string) => {
+export const createCourse = async (title: string, description: string, imgUrl: string) => {
   const token = Cookies.get("access_token");
   const userRole = Cookies.get("user_role");
 
@@ -87,6 +87,7 @@ export const createCourse = async (title: string, description: string) => {
       {
         title,
         description,
+        imgUrl
       },
       {
         headers: {
@@ -96,11 +97,12 @@ export const createCourse = async (title: string, description: string) => {
     );
 
     if (response.status === 400) {
-      console.log("Missing required fileds: title or description");
+      console.log("Missing required fileds: title, description or imgUrl");
     }
 
     if (response.status === 201) {
       console.log("Course created:", response.data);
+      console.log("Course created:", response);
       return response;
     }
   } catch (error) {

@@ -28,7 +28,7 @@ const Login = () => {
             return;
         }
         await loginUser(username, password); 
-        navigate("/home");
+        navigate("/");
     } catch (error) {
         setError("Error during login");
         console.error("Error during login:", error);
@@ -112,7 +112,7 @@ const Login = () => {
           <Typography>
             Don&apos;t have an account?{" "}
             <span>
-              <Link to="/home">Register</Link>
+              <Link to="/">Register</Link>
             </span>
           </Typography>
         </Box>

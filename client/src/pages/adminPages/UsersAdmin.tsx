@@ -39,18 +39,18 @@ function UsersAdmin() {
       <Header />
       <div className="Users">
         <TitleHeader title="Users" />
-        <TableComponent headers={headers}>
+        <TableComponent width="500px" headers={headers}>
           {users.map((user) => (
-            <TableRow key={user.id} sx={{ width: "150px" }}>
+            <TableRow key={user.id} >
               <TableCell align="center">{user.id}</TableCell>
               <TableCell align="center">{user.username}</TableCell>
               <TableCell
                 align="right"
-                sx={{ padding: 1, textAlign: "initial", width: "15%" }}
+                sx={{ width: "60px", borderBottom: 'none' }}
               >
                 <Button
                   onClick={() => handleRemoveUser(user.id)}
-                  sx={{ fontSize: "10px", marginLeft: 1 }}
+                  sx={{ fontSize: "10px" }}
                   variant="contained"
                   color="error"
                 >

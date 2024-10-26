@@ -13,14 +13,15 @@ import { FC, ReactNode } from "react";
 interface TableProps {
   headers: string[];
   children: ReactNode;
+  width: string;
 }
 
-const TableComponent: FC<TableProps> = ({ headers, children }) => {
+const TableComponent: FC<TableProps> = ({ headers, children,width }) => {
   return (
     <Box>
-      <Paper>
-        <TableContainer>
-          <Table sx={{ minWidth: 150 }}>
+      <Paper sx={{ maxWidth: width, margin: "0 auto" }}>
+        <TableContainer sx={{ maxWidth: width, margin: "0 auto" }}>
+          <Table>
             <TableHead>
               <TableRow>
                 {headers.map((header, index) => (

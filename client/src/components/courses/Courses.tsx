@@ -42,6 +42,7 @@ const Courses = () => {
             <CoursesAdmin />
           ) : (
             courses.map((course) => {
+              console.log("Course image URL:", course.imgUrl);
               return (
                 <Card sx={{ maxWidth: 300 }} key={course.id}>
                   <CardHeader title={course.title} />
@@ -53,7 +54,7 @@ const Courses = () => {
                   <CardMedia
                     component="img"
                     height="180"
-                    image="https://manual-handling.ie/wp-content/uploads/2021/03/2.png"
+                    image={course.imgUrl}
                     alt="Course image"
                   />
                 </Card>

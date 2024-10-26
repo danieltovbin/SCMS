@@ -10,6 +10,7 @@ function CourseForm() {
   const { fetchCourses } = useCoursesContext();
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [imgUrl, setImgUrl] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -17,11 +18,12 @@ function CourseForm() {
 
     setLoading(true);
     try {
-      const response = await createCourse(title, description);
+      const response = await createCourse(title, description, imgUrl);
 
       if (response) {
         setDescription("");
         setTitle("");
+        setImgUrl("");
         setMessage("created course successfully");
         await fetchCourses();
       }
@@ -54,7 +56,6 @@ function CourseForm() {
             required
           />
         </TableCell>
-
         <TableCell className="form-group">
           <TextField
             type="text"
@@ -63,6 +64,18 @@ function CourseForm() {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter the course description"
             label="Description"
+            variant="standard"
+            required
+          />
+        </TableCell>
+        <TableCell className="form-group">
+          <TextField
+            type="text"
+            id="imgUrl"
+            value={imgUrl}
+            onChange={(e) => setImgUrl(e.target.value)}
+            placeholder="Enter the course imgUrl"
+            label="ImgUrl"
             variant="standard"
             required
           />

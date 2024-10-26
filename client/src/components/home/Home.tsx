@@ -5,6 +5,7 @@ import { useAuthContext } from "../../context/AuthContext";
 import LoginPromptModal from "../modal/LoginPromptModal";
 import "./home.scss";
 import { cards, Item } from "./utils/homeUtils";
+import TitleHeader from "../titleHeader/TitleHeader";
 
 function Home() {
   const navigate = useNavigate();
@@ -25,9 +26,10 @@ function Home() {
 
   return (
     <div className="Home">
+      <TitleHeader title="WELCOME TO SCMS!" />
       <Grid2
         alignItems="center"
-        minHeight="80vh"
+        minHeight="50vh"
         container
         rowSpacing={1}
         columnSpacing={{ xs: 2, sm: 1, md: 4 }}
