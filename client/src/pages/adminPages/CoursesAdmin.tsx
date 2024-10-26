@@ -11,7 +11,7 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { removeCourse, updateCourse } from "../../api/courses";
 import { Course } from "../../components/courses/utils/coursesUtils";
 import SnackBar from "../../components/snackbar/SnackBar";
@@ -32,6 +32,7 @@ function CoursesAdmin() {
   const [currentCourse, setCurrentCourse] = useState({
     title: "",
     description: "",
+    imgUrl: "",
     id: 0,
   });
 
@@ -49,12 +50,13 @@ function CoursesAdmin() {
     }
   };
 
-  const handleUpdateCourse = async (event: React.FormEvent<HTMLDivElement>) => {
+  const handleUpdateCourse = async (event: FormEvent<HTMLDivElement>) => {
     event.preventDefault();
     try {
       const message = await updateCourse(currentCourse.id, {
         title: currentCourse.title,
         description: currentCourse.description,
+        imgUrl: currentCourse.imgUrl,
       });
 
       setCourses((prevCourses) =>
@@ -64,6 +66,7 @@ function CoursesAdmin() {
                 ...course,
                 title: currentCourse.title,
                 description: currentCourse.description,
+                imgUrl: currentCourse.imgUrl
               }
             : course
         )
@@ -80,6 +83,7 @@ function CoursesAdmin() {
       id: course.id,
       title: course.title,
       description: course.description,
+      imgUrl: course.imgUrl
     });
     setOpen(true);
   };
@@ -102,7 +106,7 @@ function CoursesAdmin() {
             <CardMedia
               component="img"
               height="180"
-              image="https://manual-handling.ie/wp-content/uploads/2021/03/2.png"
+              image={course.imgUrl}
               alt="Course image"
             />
             <Button onClick={() => handleRemoveCourse(course.id)} color="error">
@@ -146,6 +150,20 @@ function CoursesAdmin() {
               setCurrentCourse({
                 ...currentCourse,
                 description: e.target.value,
+              })
+            }
+          />
+          <TextField
+            margin="dense"
+            label="imgUrl"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={currentCourse.imgUrl}
+            onChange={(e) =>
+              setCurrentCourse({
+                ...currentCourse,
+                imgUrl: e.target.value,
               })
             }
           />

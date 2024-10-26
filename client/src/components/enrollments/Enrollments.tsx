@@ -32,7 +32,7 @@ const Enrollments = () => {
   const handleFetch = async () => {
     try {
       if (!isAuthenticated) {
-        navigate("/home");
+        navigate("/");
       }
       const data = await getEnrollments();
       setEnrollments(data.enrollments);
@@ -76,7 +76,7 @@ const Enrollments = () => {
   return (
     <div className="Enrollments">
        <TitleHeader title="Enrollment"/>
-      <TableComponent headers={headers}>
+      <TableComponent width="1300px" headers={headers}>
         {enrollments.map((enrollment) => (
           <TableRow key={enrollment.enrollmentId} sx={{ padding: 0 }}>
             {isAdmin && (
@@ -118,7 +118,7 @@ const Enrollments = () => {
                   onClick={() =>
                     handleUpdateGrade(enrollment.enrollmentId, enrollment.grade)
                   }
-                  sx={{ fontSize: "10px", marginLeft: 1 }}
+                  sx={{ fontSize: "11px", marginLeft: 1 }}
                   variant="contained"
                 >
                   Update

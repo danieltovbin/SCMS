@@ -24,7 +24,7 @@ function Header() {
   const { logoutUser } = useAuthContext(); 
 
   const handleBackToHomePage = () => {
-    navigate("/home");
+    navigate("/");
   };
 
   const handleOpenMenu = (event: MouseEvent<HTMLElement>) => {
@@ -48,7 +48,7 @@ function Header() {
         break;
       case 'Logout':
         logoutUser();
-        navigate('/home')
+        navigate('/')
         break;
       default:
         break;
@@ -65,7 +65,7 @@ function Header() {
         sx={{ position: "absolute", top: 0, left: 0, right: 0 }}
       >
         <Toolbar>
-          {location.pathname !== "/home" ? (
+          {location.pathname !== "/" ? (
             <Box sx={{ flexGrow: 1 }}>
               <IconButton onClick={handleBackToHomePage}>
                 <ArrowBackIosSharpIcon />

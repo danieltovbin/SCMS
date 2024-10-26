@@ -10,7 +10,7 @@ import ProtectedRoute from '../pages/adminPages/ProtectedRoute';
 import CoursesAdmin from '../pages/adminPages/CoursesAdmin';
 
 export const router = createBrowserRouter([
-    { path: "/home", element: <HomePage />},
+    { path: "/", element: <HomePage />},
     { path: "/courses", element: <CoursesPage />},
     { path: "/courses-admin", element: <ProtectedRoute><CoursesAdmin /></ProtectedRoute>},
     { path: "/enrollments", element: <EnrollmentsPage />},
