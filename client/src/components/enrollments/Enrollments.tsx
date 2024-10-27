@@ -16,7 +16,7 @@ import SnackBar from "../snackbar/SnackBar";
 import TableComponent from "../Table/TableComponent";
 import EnrollForm from "./utils/EnrollForm";
 import { Enrollment } from "./utils/enrollmentsUtil";
-import './enrollments.scss'
+import './utils/enrollments.scss';
 import TitleHeader from "../titleHeader/TitleHeader";
 
 const Enrollments = () => {
@@ -78,7 +78,7 @@ const Enrollments = () => {
        <TitleHeader title="Enrollment"/>
       <TableComponent width="1300px" headers={headers}>
         {enrollments.map((enrollment) => (
-          <TableRow key={enrollment.enrollmentId} sx={{ padding: 0 }}>
+          <TableRow className="table-row" key={enrollment.enrollmentId}>
             {isAdmin && (
               <TableCell align="center">{enrollment.enrollmentId}</TableCell>
             )}
@@ -115,15 +115,17 @@ const Enrollments = () => {
                 sx={{ padding: 1, textAlign: "initial", width: "15%" }}
               >
                 <Button
+                className="update-btn"
                   onClick={() =>
                     handleUpdateGrade(enrollment.enrollmentId, enrollment.grade)
                   }
-                  sx={{ fontSize: "11px", marginLeft: 1 }}
+                  sx={{ fontSize: "11px", marginLeft: 1}}
                   variant="contained"
                 >
                   Update
                 </Button>
                 <Button
+                className="remove-btn"
                   onClick={() =>
                     handleRemoveEnrollment(enrollment.enrollmentId)
                   }

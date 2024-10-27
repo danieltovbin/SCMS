@@ -9,6 +9,7 @@ import {
 import { FC } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 import { createFormProps } from "./utils/formUtils";
+import './utils/form.scss';
 
 export const CreateForm:FC<createFormProps> = ({titleName, children, textDefault, textLoading, onSubmit, message}) => {
   const { loading } = useAuthContext();
@@ -22,7 +23,7 @@ export const CreateForm:FC<createFormProps> = ({titleName, children, textDefault
             <TableRow>
               {children}
               <TableCell>
-                <Button type="submit" disabled={loading}>
+                <Button className="formBtn" variant="contained" type="submit" disabled={loading}>
                   {loading ? textLoading : textDefault}
                 </Button>
               </TableCell>

@@ -17,6 +17,7 @@ import { Course } from "../../components/courses/utils/coursesUtils";
 import SnackBar from "../../components/snackbar/SnackBar";
 import { useCoursesContext } from "../../context/CoursesContext";
 import CourseForm from "../../components/courses/utils/CourseForm";
+import './admin.scss';
 
 function CoursesAdmin() {
   const {
@@ -96,7 +97,7 @@ function CoursesAdmin() {
     <>
       {courses.map((course) => {
         return (
-          <Card sx={{ maxWidth: 300 }} key={course.id}>
+          <Card className="card" sx={{ maxWidth: 300 }} key={course.id}>
             <CardHeader title={course.title} />
             <CardContent sx={{ padding: 0 }}>
               <Typography sx={{ height: "60px" }} variant="body2">
@@ -109,10 +110,10 @@ function CoursesAdmin() {
               image={course.imgUrl}
               alt="Course image"
             />
-            <Button onClick={() => handleRemoveCourse(course.id)} color="error">
+            <Button variant="contained" className="remove-btn" onClick={() => handleRemoveCourse(course.id)}>
               remove
             </Button>
-            <Button onClick={() => handleOpenUpdateDialog(course)}>
+            <Button variant="contained" className="update-btn" onClick={() => handleOpenUpdateDialog(course)}>
               update
             </Button>
           </Card>

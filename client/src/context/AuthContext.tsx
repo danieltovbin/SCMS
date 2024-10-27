@@ -6,6 +6,7 @@ interface AuthContextType {
     isAuthenticated: boolean;
     loading: boolean;
     isAdmin: boolean;
+    user: { username: string };
     setLoading: (loading: boolean) => void;
     loginUser: (username: string, password: string) => Promise<void>;
     logoutUser: () => Promise<void>;
@@ -21,12 +22,15 @@ export const AuthProvider:FC<AuthProviderProps> = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [user, setUser] = useState({ username: '' })
     
     const handleIsAuth = () => {
         const userRole = Cookies.get('user_role');
         const accessToken = Cookies.get('access_token');
+        const username = Cookies.get('username');
         setIsAuthenticated(!!accessToken);
         setIsAdmin(userRole === 'admin');
+        setUser({ username: username || ''});
         setLoading(false);
     };
 
@@ -36,6 +40,7 @@ export const AuthProvider:FC<AuthProviderProps> = ({ children }) => {
             if (response.status === 200) {
                 Cookies.set('access_token', response.data.access_token, { expires: 1 });
                 Cookies.set('user_role', response.data.role, { expires: 1 });                
+                Cookies.set('username', response.data.username, { expires: 1 });             
                 handleIsAuth();
             }
         } catch (error) {
@@ -52,6 +57,7 @@ export const AuthProvider:FC<AuthProviderProps> = ({ children }) => {
             await axios.post('/api/auth/logout', {}, { withCredentials: true });
             Cookies.remove('access_token');
             Cookies.remove('user_role');
+            Cookies.remove('username');
 
             handleIsAuth();
         } catch (error) {
@@ -64,7 +70,7 @@ export const AuthProvider:FC<AuthProviderProps> = ({ children }) => {
     }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isAdmin, loading, setLoading, loginUser , logoutUser}}>
+    <AuthContext.Provider value={{ user,isAuthenticated, isAdmin, loading, setLoading, loginUser , logoutUser}}>
         {children}
     </AuthContext.Provider>
   )

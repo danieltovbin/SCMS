@@ -11,7 +11,7 @@ import { useEffect } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 import { useCoursesContext } from "../../context/CoursesContext";
 import TitleHeader from "../titleHeader/TitleHeader";
-import "./courses.scss";
+import './utils/courses.scss';
 import CoursesAdmin from "../../pages/adminPages/CoursesAdmin";
 
 const Courses = () => {
@@ -44,7 +44,7 @@ const Courses = () => {
             courses.map((course) => {
               console.log("Course image URL:", course.imgUrl);
               return (
-                <Card sx={{ maxWidth: 300 }} key={course.id}>
+                <Card className="card" sx={{ maxWidth: 300 }} key={course.id}>
                   <CardHeader title={course.title} />
                   <CardContent sx={{ padding: 0 }}>
                     <Typography sx={{ height: "60px" }} variant="body2">

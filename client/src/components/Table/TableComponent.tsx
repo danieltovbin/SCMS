@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { FC, ReactNode } from "react";
+import './utils/table.scss';
 
 interface TableProps {
   headers: string[];
@@ -18,14 +19,14 @@ interface TableProps {
 
 const TableComponent: FC<TableProps> = ({ headers, children,width }) => {
   return (
-    <Box>
-      <Paper sx={{ maxWidth: width, margin: "0 auto" }}>
+    <Box className="box">
+      <Paper className="paper" sx={{ maxWidth: width, margin: "0 auto" }}>
         <TableContainer sx={{ maxWidth: width, margin: "0 auto" }}>
           <Table>
             <TableHead>
               <TableRow>
                 {headers.map((header, index) => (
-                  <TableCell align="center" key={index} sx={{ fontWeight: "bold" }}>
+                  <TableCell className="table-cell" align="center" key={index}>
                     {header}
                   </TableCell>
                 ))}

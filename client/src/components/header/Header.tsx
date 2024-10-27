@@ -14,7 +14,7 @@ import { MouseEvent, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { darkTheme } from "./utils/headerUtils";
 import { useAuthContext } from "../../context/AuthContext";
-
+import './utils/header.scss';
 
 function Header() {
   const { isAuthenticated} = useAuthContext();
@@ -62,12 +62,12 @@ function Header() {
     <ThemeProvider theme={darkTheme}>
       <AppBar
         position="static"
-        sx={{ position: "absolute", top: 0, left: 0, right: 0 }}
+        className="appBar"
       >
         <Toolbar>
           {location.pathname !== "/" ? (
             <Box sx={{ flexGrow: 1 }}>
-              <IconButton onClick={handleBackToHomePage}>
+              <IconButton className="iconBtn" aria-label="BackToHomePage" onClick={handleBackToHomePage}>
                 <ArrowBackIosSharpIcon />
               </IconButton>
             </Box>

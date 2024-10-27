@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
 import LoginPromptModal from "../modal/LoginPromptModal";
-import "./home.scss";
+import './utils/home.scss';
 import { cards, Item } from "./utils/homeUtils";
 import TitleHeader from "../titleHeader/TitleHeader";
 
@@ -42,17 +42,18 @@ function Home() {
             if (card.id === 2 && !isAuthenticated) {
               return (
                 <Grid2 key={card.id} onClick={handleOpen} size={card.cardsSize}>
-                  <Item>{card.title}</Item>
+                  <Item className="item">{card.title}</Item>
                 </Grid2>
               );
             }
             return (
               <Grid2
+              
                 key={card.id}
                 onClick={() => handleCardClick(card.path)}
                 size={card.cardsSize}
               >
-                <Item>{card.title}</Item>
+                <Item className="item">{card.title}</Item>
               </Grid2>
             );
           })}

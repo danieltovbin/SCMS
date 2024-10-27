@@ -3,3 +3,21 @@
     margin-top: var(--marginTop);
     margin-bottom: var(--marginBottom);
 }
+
+.remove-btn {
+    background-color: var(--removeBtnBackgroundColor) !important;
+    color: var(--removeBtnColor) !important;
+}
+
+.Courses {
+    .remove-btn, .update-btn {
+        padding: 0;
+        font-size: 12px;
+        margin: 10px;
+    }
+
+    .update-btn {
+        background-color: var(--updateBtnBackgroundColor);
+        color: var(--updateBtnColor);
+    }
+}

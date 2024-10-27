@@ -2,7 +2,6 @@ import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 
 export const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: "#fff",
   ...theme.typography.body2,
   height: "40vh",
   fontSize: 40,

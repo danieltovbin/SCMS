@@ -1,0 +1,20 @@
+.Enrollments {
+  text-align: center;
+  margin-top: var(--marginTop);
+  margin-bottom: var(--marginBottom);
+
+  .update-btn {
+    background-color: var(--updateBtnBackgroundColor);
+    color: var(--updateBtnColor);
+  }
+
+  .remove-btn {
+    background-color: var(--removeBtnBackgroundColor) !important;
+    color: var(--removeBtnColor);
+  }
+}
+
+.table-row {
+  background-color: var(--backgroundCard);
+  padding: 0px;
+}

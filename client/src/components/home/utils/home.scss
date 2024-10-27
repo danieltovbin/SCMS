@@ -1,5 +1,9 @@
-.Courses {
+.Home {
     text-align: center; 
     margin-top: var(--marginTop);
     margin-bottom: var(--marginBottom);
+
+    .item {
+        background-color: var(--backgroundCard);
+    }
 }

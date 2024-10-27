@@ -41,7 +41,7 @@ function UsersAdmin() {
         <TitleHeader title="Users" />
         <TableComponent width="500px" headers={headers}>
           {users.map((user) => (
-            <TableRow key={user.id} >
+            <TableRow className="table-row" key={user.id} >
               <TableCell align="center">{user.id}</TableCell>
               <TableCell align="center">{user.username}</TableCell>
               <TableCell
@@ -49,6 +49,7 @@ function UsersAdmin() {
                 sx={{ width: "60px", borderBottom: 'none' }}
               >
                 <Button
+                className="remove-btn"
                   onClick={() => handleRemoveUser(user.id)}
                   sx={{ fontSize: "10px" }}
                   variant="contained"
